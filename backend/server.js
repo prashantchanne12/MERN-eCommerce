@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 
 // Routers
 import productRoutes from './routes/productRoutes.js';
+import userRouter from './routes/userRoutes.js';
 
 // Middlewares
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js';
@@ -15,13 +16,14 @@ connectDB();
 
 const app = express();
 
-
+app.use(express.json());
 
 app.get('/', (req, res, next) => {
     res.send('API is running');
 });
 
 app.use('/api/products', productRoutes);
+app.use('/api/users', userRouter);
 
 // Middlewares
 app.use(notFound);
