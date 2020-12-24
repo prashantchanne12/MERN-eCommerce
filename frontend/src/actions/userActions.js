@@ -58,7 +58,7 @@ export const logout = () => (dispatch) => {
 }
 
 
-export const login = (name, email, password) => async (dispatch) => {
+export const register = (name, email, password) => async (dispatch) => {
     try {
 
         dispatch({
