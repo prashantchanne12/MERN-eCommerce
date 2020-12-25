@@ -6,6 +6,7 @@ import connectDB from './config/db.js';
 // Routers
 import productRoutes from './routes/productRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import orderRouter from './routes/orderRoutes.js';
 
 // Middlewares
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js';
@@ -24,6 +25,7 @@ app.get('/', (req, res, next) => {
 
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 
 // Middlewares
 app.use(notFound);
