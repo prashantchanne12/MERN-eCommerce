@@ -11,6 +11,8 @@ const authUser = asyncHandler(async (req, res, next) => {
 
     const user = await User.findOne({ email });
 
+    console.log(user);
+
     if (user && (await user.matchPassword(password))) {
         res.send({
             _id: user._id,
@@ -122,6 +124,21 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
 const getUsers = asyncHandler(async (req, res, next) => {
     const users = await User.find({});
     res.send(users);
+});
+
+// @desc   Delete user 
+// @route  DELETE /api/users/:id
+// @access private/admin
+const deleteUser = asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.params.id);
+
+    if (user) {
+        await user.remove();
+        res.send({ message: 'User removed' });
+    } else {
+        res.status(404);
+        throw new Error('User not found');
+    }
 
 });
 
@@ -131,4 +148,5 @@ export {
     registerUser,
     updateUserProfile,
     getUsers,
+    deleteUser,
 }
