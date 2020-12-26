@@ -39,7 +39,7 @@ const OrderScreen = ({match}) => {
             const { data: clientId } = await axios.get('/api/config/paypal');
             const script = document.createElement('script');
             script.type = 'text/javascript';
-            script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+            script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=INR`;
             script.async = true;
             script.onload = () => {
                 setSdkReady(true);
@@ -186,7 +186,8 @@ const OrderScreen = ({match}) => {
                                        !sdkReady ? 
                                        <Loader /> :
                                        (
-                                        <PayPalButton 
+                                        <PayPalButton
+                                        currency='INR'
                                         amount={order.totalPrice} 
                                         onSuccess={successPaymentHandler}
                                        />
