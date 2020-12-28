@@ -8,11 +8,15 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { 
     getOrderDetails,
-    payOrder
+    payOrder,
+    deliverOrder,
 } from '../actions/orderActions';
-import { ORDER_PAY_RESET } from '../constants/orderConstants';
+import { 
+    ORDER_PAY_RESET, 
+    ORDER_DELIVER_RESET,
+} from '../constants/orderConstants';
 
-const OrderScreen = ({match}) => {
+const OrderScreen = ({match, history}) => {
 
     const orderId = match.params.id;
 
@@ -20,11 +24,17 @@ const OrderScreen = ({match}) => {
 
     const dispatch = useDispatch();
 
+    const userLogin = useSelector(state => state.userLogin);
+    const { userInfo } = userLogin;  
+
     const orderDetails = useSelector(state => state.orderDetails);
     const { order, loading, error } = orderDetails;
 
     const orderPay = useSelector(state => state.orderPay);
     const { success : successPay, loading : loadingPay } = orderPay;
+    
+    const orderDeliver = useSelector(state => state.orderDeliver);
+    const { success : successDeliver, loading : loadingDeliver } = orderDeliver;
 
     // // Calculate Prices
     const addDecimals = (num) => (Math.round(num * 100) / 100 ).toFixed(2);
@@ -34,6 +44,10 @@ const OrderScreen = ({match}) => {
     }
 
     useEffect(() => {
+
+        if(!userInfo){
+            history.push('/login');
+        }
 
         const addPayPalScript = async() =>{
             const { data: clientId } = await axios.get('/api/config/paypal');
@@ -48,11 +62,13 @@ const OrderScreen = ({match}) => {
             document.body.appendChild(script);
         }
 
-        if(!order || order._id !== orderId || successPay) {
-            dispatch({
-                type: ORDER_PAY_RESET,
-            })
+        if(!order || order._id !== orderId || successPay || successDeliver) {
+            
+            dispatch({ type: ORDER_PAY_RESET });
+            dispatch({ type: ORDER_DELIVER_RESET });
+
             dispatch(getOrderDetails(orderId));
+
         }else if(!order.isPaid){
             if(!window.paypal){
                 addPayPalScript();
@@ -61,12 +77,16 @@ const OrderScreen = ({match}) => {
             }
         }
 
-    }, [dispatch, orderId, order, successPay ]);
+    }, [dispatch, orderId, order, successPay, successDeliver ]);
 
     const successPaymentHandler = (paymentResult) => {
         console.log(paymentResult);
         
         dispatch(payOrder(orderId, paymentResult));
+    }
+
+    const deliverHander = () => {
+        dispatch(deliverOrder(orderId));
     }
 
     return loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
@@ -194,6 +214,21 @@ const OrderScreen = ({match}) => {
                                        )}
                                    </ListGroup.Item>
                                )
+                            }
+
+                            { loadingDeliver && <Loader/> }
+
+                            {
+                              userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered ?
+                                <ListGroup.Item>
+                                    <Button 
+                                        type='button'
+                                        className='btn btn-block'
+                                        onClick={deliverHander}
+                                    >
+                                        Mark As Delivered
+                                    </Button>
+                                </ListGroup.Item> : <></>
                             }
 
                         </ListGroup>
