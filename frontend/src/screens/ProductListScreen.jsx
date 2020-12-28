@@ -4,7 +4,8 @@ import { Table, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listProducts, deleteProduct } from '../actions/productActions';
+import { listProducts, deleteProduct, createProduct } from '../actions/productActions';
+import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
 
 const ProductListScreen = ({ history, match }) => {
 
@@ -17,16 +18,35 @@ const ProductListScreen = ({ history, match }) => {
     const { userInfo } = userLogin;  
 
     const productDelete = useSelector(state => state.productDelete);
-    const { loading: loadingDelete, error: errorDelete, success } = productDelete;  
+    const { 
+        loading: loadingDelete,
+        error: errorDelete,
+        success: successDelete } = productDelete;  
+
+    const productCreate = useSelector(state => state.productCreate);
+    const { 
+        loading: loadingCreate,
+        error: errorCreate, 
+        success: successCreate, 
+        product:createtedProduct } = productCreate;  
 
 
     useEffect(() => {
-        if(userInfo && userInfo.isAdmin){
-            dispatch(listProducts());
-        }else{
+
+        dispatch({ type: PRODUCT_CREATE_RESET });
+
+
+        if(!userInfo.isAdmin){
             history.push('/login');
         }
-    },[dispatch, history, userInfo, success]);
+
+        if(successCreate){
+            history.push(`/admin/product/${createtedProduct._id}/edit`);
+        }else{
+            dispatch(listProducts());
+        }
+
+    },[dispatch, history, userInfo, successDelete, successCreate, createtedProduct]);
 
     const deleteHandler = (productId) => {
 
@@ -36,7 +56,7 @@ const ProductListScreen = ({ history, match }) => {
     }
 
     const createProductHander = () => {
-
+        dispatch(createProduct());
     }
 
     return (
@@ -51,6 +71,8 @@ const ProductListScreen = ({ history, match }) => {
         </Row>
         { loadingDelete && <Loader/> }
         { errorDelete && <Message variant='danger'>{errorDelete}</Message> }
+        { loadingCreate && <Loader/> }
+        { errorCreate && <Message variant='danger'>{errorCreate}</Message> }
           {
             loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
                 <Table striped bordered hover responsive className='table-sm'>
