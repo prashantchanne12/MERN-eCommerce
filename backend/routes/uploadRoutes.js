@@ -5,37 +5,39 @@ import multer from 'multer';
 const uploadRouter = express.Router();
 
 const storage = multer.diskStorage({
-    destination(req, file, callback) {
-        callback(null, 'uploads/');
+    destination(req, file, cb) {
+        cb(null, 'uploads/')
     },
-    filename(req, file, callback) {
-        callback(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-    }
-});
+    filename(req, file, cb) {
+        cb(
+            null,
+            `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+        )
+    },
+})
 
-const checkFileType = (file, callback) => {
-    const fileTypes = /jpg|jpeg|png/
-    const extname = fileTypes.test(path.extname(file.originalname).toLocaleLowerCase());
-    const mimeType = fileTypes.test(file.mimeType);
+function checkFileType(file, cb) {
+    const filetypes = /jpg|jpeg|png/
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
+    const mimetype = filetypes.test(file.mimetype)
 
-    if (extname && mimeType) {
-        return callback(null, true);
+    if (extname && mimetype) {
+        return cb(null, true)
     } else {
-        return callback('Images Only');
+        cb('Images only!')
     }
 }
 
 const upload = multer({
     storage,
-    fileFilter: function (req, file, callback) {
-        checkFileType(file, callback);
-    }
-});
+    fileFilter: function (req, file, cb) {
+        checkFileType(file, cb)
+    },
+})
 
-uploadRouter.post('/', upload.single('image'),
-    (req, res, next) => {
-        res.send(`/${req.file.path}`);
-    });
+uploadRouter.post('/', upload.single('image'), (req, res) => {
+    res.send(`/${req.file.path}`)
+});
 
 
 
