@@ -6,13 +6,16 @@ import {
     deleteProduct,
     createProduct,
     updateProduct,
-    createProductReview
+    createProductReview,
+    getTopProducts
 } from '../controllers/productController.js';
 import { protect, admin } from '../middlewares/authMiddleware.js';
 
 productRouter.get('/', getProducts);
 productRouter.get('/:id', getProductById);
 productRouter.post('/:id/reviews', protect, createProductReview);
+productRouter.get('/top', getTopProducts);
+
 
 // Admin
 productRouter.delete('/:id', protect, admin, deleteProduct);
