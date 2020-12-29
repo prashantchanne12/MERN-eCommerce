@@ -26,10 +26,6 @@ if (process.env.NODE_ENV == 'development') {
 
 app.use(express.json());
 
-app.get('/', (req, res, next) => {
-    res.send('API is running');
-});
-
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
@@ -42,6 +38,20 @@ app.get('/api/config/paypal', (req, res) => {
 
 // using static files
 const __dirname = path.resolve();
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '/frontend/build')))
+
+    app.get('*', (req, res, next) => {
+        res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+    });
+
+} else {
+    app.get('/', (req, res, next) => {
+        res.send('API is running');
+    });
+}
+
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // Middlewares
