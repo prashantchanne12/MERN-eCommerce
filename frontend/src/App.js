@@ -29,8 +29,10 @@ function App() {
       <Header />
       <main className="py-3">
         <Container>
+          <Route exact path='/search/:keyword' component={HomeScreen} />
           <Route path='/' exact component={HomeScreen} />
-          <Route path='/search:keyword' component={HomeScreen} />
+          <Route path='/page/:pageNumber' exact component={HomeScreen} />
+          <Route path='/search/:keyword/:pageNumber' exact component={HomeScreen} />
           <Route path='/shipping' component={ShippingScreen} />
           <Route path='/payment' component={PaymentScreen} />
           <Route path='/placeorder' component={PlaceOrderScreen} />
@@ -42,7 +44,8 @@ function App() {
           <Route path='/cart/:id?' component={CartScreen} />
           <Route path='/admin/userlist' component={UserListScreen} />
           <Route path='/admin/:id/edit' component={UserEditScreen} />
-          <Route path='/admin/productlist' component={ProductListScreen} />
+          <Route exact path='/admin/productlist' component={ProductListScreen} />
+          <Route exact path='/admin/productlist/:pageNumber' component={ProductListScreen} />
           <Route path='/admin/product/:id/edit' component={ProductEditScreen} />
           <Route path='/admin/orderlist' component={OrderListScreen} />
         </Container>
