@@ -12,9 +12,9 @@ import {
 import { protect, admin } from '../middlewares/authMiddleware.js';
 
 productRouter.get('/', getProducts);
+productRouter.get('/top', getTopProducts);
 productRouter.get('/:id', getProductById);
 productRouter.post('/:id/reviews', protect, createProductReview);
-productRouter.get('/top', getTopProducts);
 
 
 // Admin

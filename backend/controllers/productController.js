@@ -168,7 +168,7 @@ const getTopProducts = asyncHandler(async (req, res, next) => {
 
     const products = await Product.find({}).sort({ rating: -1 }).limit(3);
 
-    res.send(products);
+    res.json(products);
 });
 
 export {
