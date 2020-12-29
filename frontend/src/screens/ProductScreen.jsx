@@ -30,7 +30,7 @@ const ProductScreen = ({match, history}) => {
     const { loading, error, product } = productDetails;
 
     const productReviewCreate = useSelector(state => state.productReviewCreate);
-    const { loading: loadingProductReview, error:errorProductReview, success: successProductReview } = productReviewCreate;
+    const { error:errorProductReview, success: successProductReview } = productReviewCreate;
 
     useEffect(() => {
 
