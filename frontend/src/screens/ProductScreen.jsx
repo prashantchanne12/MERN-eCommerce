@@ -13,6 +13,7 @@ import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import Meta from '../components/Meta';
 
 const ProductScreen = ({match, history}) => {
 
@@ -59,7 +60,11 @@ const ProductScreen = ({match, history}) => {
                 Go Back
             </Link>
             
-            { loading ? <Loader /> : error ? <Message variant='danger'> {error} </Message> :  <Row>
+            { loading ? <Loader /> : error ? <Message variant='danger'> {error} </Message> :  
+            
+            <>
+            <Meta title={product.name} description={product.description} />
+            <Row>
                 <Col md={6}>
                     <Image src={product.image} alt={product.name} fluid />
                 </Col>
@@ -141,7 +146,11 @@ const ProductScreen = ({match, history}) => {
                         </ListGroup>
                     </Card>
                 </Col>
-            </Row>}
+            </Row>
+            </>
+
+            }
+
 
             <Row>
                 <Col md={6}>
